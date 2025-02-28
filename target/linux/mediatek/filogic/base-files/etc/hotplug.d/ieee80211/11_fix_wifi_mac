@@ -90,8 +90,7 @@ case "$board" in
 		;;
 	glinet,gl-mt6000|\
 	glinet,gl-x3000|\
-	glinet,gl-xe3000|\
-	superbox,s20-plus)
+	glinet,gl-xe3000)
 		addr=$(mmc_get_mac_binary factory 0x04)
 		[ "$PHYNBR" = "0" ] && echo "$addr" > /sys${DEVPATH}/macaddress
 		[ "$PHYNBR" = "1" ] && macaddr_add $addr 1 > /sys${DEVPATH}/macaddress
@@ -173,5 +172,10 @@ case "$board" in
 		hw_mac_addr="$(mtd_get_mac_binary mrd 0x1fff8)"
 		[ "$PHYNBR" = "0" ] && macaddr_add $hw_mac_addr 1 > /sys${DEVPATH}/macaddress
 		[ "$PHYNBR" = "1" ] && macaddr_add $hw_mac_addr 2 > /sys${DEVPATH}/macaddress
+		;;
+	superbox,s20-plus)
+		addr=$(mmc_get_mac_binary factory 0x4)
+		[ "$PHYNBR" = "0" ] && $addr > /sys${DEVPATH}/macaddress
+		[ "$PHYNBR" = "1" ] && macaddr_setbit_la $addr > /sys${DEVPATH}/macaddress
 		;;
 esac
