@@ -95,6 +95,10 @@ mercusys,mr90x-v1-ubi)
 netgear,wax220)
 	ucidef_set_led_netdev "eth0" "LAN" "green:lan" "eth0"
 	;;
+netcore,n60|\
+netcore,n60-pro)
+	ucidef_set_led_netdev "wan" "WAN" "blue:wan" "eth1" "link"
+	;;
 nradio,c8-668gl)
 	ucidef_set_led_netdev "wifi" "WIFI" "blue:wlan" "phy1-ap0" "link"
 	ucidef_set_led_netdev "5g" "5G" "blue:indicator-0" "eth1" "link"
