@@ -14,60 +14,67 @@
 	aliases {
 		serial0 = &uart0;
 		label-mac-device = &gmac0;
-		led-boot = &sys_status;
-		led-failsafe = &sys_status;
-		led-running = &sys_status;
-		led-upgrade = &sys_status;
+		led-boot = &led_power;
+		led-failsafe = &led_power;
+		led-running = &led_power;
+		led-upgrade = &led_power;
 	};
 
 	chosen {
-		bootargs-append = " root=/dev/fit0 rootwait";
+		bootargs = "root=/dev/fit0 rootwait";
 		rootdisk = <&ubi_rootdisk>;
 		stdout-path = "serial0:115200n8";
 	};
 
-	memory {
+	memory@40000000 {
 		reg = <0 0x40000000 0 0x20000000>;
 	};
 
-	keys {
+	gpio-keys {
 		compatible = "gpio-keys";
 
-		reset {
+		button-reset {
 			label = "reset";
 			linux,code = <KEY_RESTART>;
 			gpios = <&pio 9 GPIO_ACTIVE_LOW>;
 		};
 
-		mesh {
+		button-mesh {
 			label = "mesh";
 			linux,code = <KEY_WPS_BUTTON>;
 			gpios = <&pio 10 GPIO_ACTIVE_LOW>;
 		};
 	};
 
-	leds {
+	gpio-leds {
 		compatible = "gpio-leds";
 
-		sys_status: status {
+		led-0 {
+			color = <LED_COLOR_ID_BLUE>;
+			function = LED_FUNCTION_WLAN;
+			gpios = <&pio 1 GPIO_ACTIVE_LOW>;
+			linux,default-trigger = "phy1tpt";
+		};
+
+		led_power: led-1 {
 			color = <LED_COLOR_ID_BLUE>;
 			function = LED_FUNCTION_POWER;
 			gpios = <&pio 29 GPIO_ACTIVE_LOW>;
 		};
 
-		usb {
+		led-2 {
 			color = <LED_COLOR_ID_BLUE>;
 			function = LED_FUNCTION_USB;
 			gpios = <&pio 30 GPIO_ACTIVE_LOW>;
 		};
 
-		mesh {
+		led-3 {
 			color = <LED_COLOR_ID_BLUE>;
-			function = LED_FUNCTION_STATUS;
+			function = LED_FUNCTION_WPS;
 			gpios = <&pio 31 GPIO_ACTIVE_LOW>;
 		};
 
-		wan {
+		led-4 {
 			color = <LED_COLOR_ID_BLUE>;
 			function = LED_FUNCTION_WAN;
 			gpios = <&pio 32 GPIO_ACTIVE_LOW>;
@@ -91,7 +98,6 @@
 		regulator-boot-on;
 		regulator-always-on;
 	};
-
 };
 
 &crypto {
@@ -106,7 +112,7 @@
 		reg = <0>;
 		phy-mode = "2500base-x";
 
-		nvmem-cells = <&macaddr_lan>;
+		nvmem-cells = <&macaddr_factory_1fef20 0>;
 		nvmem-cell-names = "mac-address";
 
 		fixed-link {
@@ -122,7 +128,7 @@
 		phy-handle = <&phy6>;
 		phy-mode = "2500base-x";
 
-		nvmem-cells = <&macaddr_wan>;
+		nvmem-cells = <&macaddr_factory_1fef26 0>;
 		nvmem-cell-names = "mac-address";
 	};
 
@@ -140,11 +146,33 @@
 	phy5: phy@5 {
 		compatible = "ethernet-phy-ieee802.3-c45";
 		reg = <5>;
+
+		leds {
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			led@3 {
+				reg = <3>;
+				color = <LED_COLOR_ID_GREEN>;
+				function = LED_FUNCTION_LAN;
+			};
+		};
 	};
 
 	phy6: phy@6 {
 		compatible = "ethernet-phy-ieee802.3-c45";
 		reg = <6>;
+
+		leds {
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			led@3 {
+				reg = <3>;
+				color = <LED_COLOR_ID_GREEN>;
+				function = LED_FUNCTION_WAN;
+			};
+		};
 	};
 
 	switch: switch@1f {
@@ -220,19 +248,19 @@
 			#size-cells = <1>;
 
 			partition@0 {
-				label = "BL2";
-				reg = <0x0000000 0x0100000>;
+				label = "bl2";
+				reg = <0x0 0x100000>;
 				read-only;
 			};
 
 			partition@100000 {
 				label = "u-boot-env";
-				reg = <0x0100000 0x0080000>;
+				reg = <0x100000 0x80000>;
 			};
 
-			factory: partition@180000 {
-				label = "Factory";
-				reg = <0x0180000 0x0200000>;
+			partition@180000 {
+				label = "factory";
+				reg = <0x180000 0x200000>;
 				read-only;
 
 				nvmem-layout {
@@ -240,25 +268,33 @@
 					#address-cells = <1>;
 					#size-cells = <1>;
 
-					macaddr_lan: macaddr@1fef20 {
-						reg = <0x1fef20 0x6>;
+					eeprom_factory_0: eeprom@0 {
+						reg = <0x0 0x1000>;
 					};
 
-					macaddr_wan: macaddr@1fef26 {
+					macaddr_factory_1fef20: macaddr@1fef20 {
+						compatible = "mac-base";
+						reg = <0x1fef20 0x6>;
+						#nvmem-cell-cells = <1>;
+					};
+
+					macaddr_factory_1fef26: macaddr@1fef26 {
+						compatible = "mac-base";
 						reg = <0x1fef26 0x6>;
+						#nvmem-cell-cells = <1>;
 					};
 				};
 			};
 
 			partition@380000 {
-				label = "FIP";
-				reg = <0x0380000 0x0200000>;
+				label = "fip";
+				reg = <0x380000 0x200000>;
 				read-only;
 			};
 
 			partition@580000 {
 				label = "ubi";
-				reg = <0x0580000 0x7280000>;
+				reg = <0x0580000 0x7a80000>;
 				compatible = "linux,ubi";
 
 				volumes {
@@ -330,9 +366,9 @@
 };
 
 &wifi {
-	status = "okay";
+	nvmem-cells = <&eeprom_factory_0>;
+	nvmem-cell-names = "eeprom";
 	pinctrl-names = "default";
 	pinctrl-0 = <&wf_2g_5g_pins>;
-
-	mediatek,mtd-eeprom = <&factory 0x0>;
+	status = "okay";
 };
