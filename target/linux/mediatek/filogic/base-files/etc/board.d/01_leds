@@ -103,9 +103,8 @@ netcore,n60-pro)
 netgear,wax220)
 	ucidef_set_led_netdev "eth0" "LAN" "green:lan" "eth0"
 	;;
-netcore,n60|\
-netcore,n60-pro)
-	ucidef_set_led_netdev "wan" "WAN" "blue:wan" "eth1" "link"
+netis,nx31)
+	ucidef_set_led_netdev "wan" "wan" "blue:wan" "eth1" "link tx rx"
 	;;
 nradio,c8-668gl)
 	ucidef_set_led_netdev "wifi" "WIFI" "blue:wlan" "phy1-ap0" "link"
