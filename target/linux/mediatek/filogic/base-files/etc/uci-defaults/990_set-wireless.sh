@@ -27,7 +27,6 @@ configure_wifi() {
 	fi
 
 	# 设置无线设备参数
-
 	uci set wireless.radio${radio}.channel=${channel}
 	uci set wireless.radio${radio}.htmode=${htmode}
 	uci set wireless.radio${radio}.txpower=${BASE_POWER}
