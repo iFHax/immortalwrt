@@ -217,7 +217,7 @@ Signed-off-by: Seevalamuthu Mariappan <quic_seevalam@quicinc.com>
  	bool fix_l1ss;
 --- a/drivers/net/wireless/ath/ath11k/mac.c
 +++ b/drivers/net/wireless/ath/ath11k/mac.c
-@@ -10265,6 +10265,11 @@ static int __ath11k_mac_register(struct
+@@ -10266,6 +10266,11 @@ static int __ath11k_mac_register(struct
  		 */
  		ar->hw->wiphy->interface_modes &= ~BIT(NL80211_IFTYPE_MONITOR);
  
