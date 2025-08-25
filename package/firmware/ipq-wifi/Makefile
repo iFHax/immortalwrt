@@ -6,9 +6,9 @@ PKG_RELEASE:=1
 
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_URL=$(PROJECT_GIT)/project/firmware/qca-wireless.git
-PKG_SOURCE_DATE:=2023-11-10
-PKG_SOURCE_VERSION:=0c2e810e71ed0a59fb00246c7fa2c236ff67a0ee
-PKG_MIRROR_HASH:=fc6016540bd2c67484952d0e4432d740f0e022d9b688e851bb6321def8d36844
+PKG_SOURCE_DATE:=2025-05-30
+PKG_SOURCE_VERSION:=fde3d2a7ce59be389224304049a4a5b9ca49a45e
+PKG_MIRROR_HASH:=2e149366118192d4976baf42ac23d22ef32e477feb111d2756a2411278b6cf46
 
 PKG_FLAGS:=nonshared
 
@@ -44,7 +44,8 @@ ALLWIFIBOARDS:= \
 	zte_mf289f \
 	zte_mf287 \
 	zte_mf287plus \
-	zyxel_nbg7815
+	zyxel_nbg7815 \
+	arcadyan_aw1000
 
 ALLWIFIPACKAGES:=$(foreach BOARD,$(ALLWIFIBOARDS),ipq-wifi-$(BOARD))
 
@@ -101,7 +102,7 @@ that is not yet present in the upstream wireless firmware distribution.
 This package supplies board-2.bin file(s) that, in the interim,
 overwrite those supplied by the ath10k-firmware-* packages.
 
-This is package is only necessary for the $(2).
+This package is only necessary for the $(2).
 
 Do not install it for any other device!
   endef
@@ -115,7 +116,7 @@ Do not install it for any other device!
 endef
 
 # Add board name to ALLWIFIBOARDS
-# Place files in this directory as board-<devicename>.<qca4019|qca9888|qca9889|qca9984|qca99x0|ipq8074>
+# Place files in this directory as board-<devicename>.<qca4019|qca9888|qca9889|qca9984|qca99x0|ipq8074|qcn9074>
 # Add $(eval $(call generate-ipq-wifi-package,<devicename>,<display name>))
 
 $(eval $(call generate-ipq-wifi-package,buffalo_wxr-5950ax12,Buffalo WXR-5950AX12))
@@ -135,5 +136,6 @@ $(eval $(call generate-ipq-wifi-package,zte_mf289f,ZTE MF289F))
 $(eval $(call generate-ipq-wifi-package,zte_mf287,ZTE MF287))
 $(eval $(call generate-ipq-wifi-package,zte_mf287plus,ZTE MF287Plus))
 $(eval $(call generate-ipq-wifi-package,zyxel_nbg7815,Zyxel NBG7815))
+$(eval $(call generate-ipq-wifi-package,arcadyan_aw1000,Arcadyan AW1000))
 
 $(foreach PACKAGE,$(ALLWIFIPACKAGES),$(eval $(call BuildPackage,$(PACKAGE))))
