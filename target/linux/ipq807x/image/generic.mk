@@ -24,12 +24,17 @@ define Device/UbiFit
 endef
 
 define Device/arcadyan_aw1000
-  $(call Device/qcom-ipq807x)
-  DEVICE_TITLE := Arcadyan AW1000
-  DEVICE_DTS := qcom-ipq8072-aw1000
+	$(call Device/FitImage)
+	$(call Device/UbiFit)
+	DEVICE_VENDOR := Arcadyan
+	DEVICE_MODEL := AW1000
+	BLOCKSIZE := 128k
+	PAGESIZE := 2048
+	DEVICE_DTS_CONFIG := config@hkxx   # <- check correct config node in your DTSI (hk14? hkxx?)
+	SOC := ipq8072
+	DEVICE_PACKAGES := ipq-wifi-arcadyan_aw1000
 endef
 TARGET_DEVICES += arcadyan_aw1000
-
 
 define Device/buffalo_wxr-5950ax12
 	$(call Device/FitImage)
